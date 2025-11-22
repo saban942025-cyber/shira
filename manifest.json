@@ -3,7 +3,7 @@
   "short_name": "שירה",
   "description": "אפליקציה לקביעת תורים לטיפולי יופי ואסתטיקה בהוד השרון",
   "start_url": "./index.html",
-  "id": "/index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#fcfbf9",
   "theme_color": "#d4af37",
@@ -12,13 +12,13 @@
   "lang": "he-IL",
   "icons": [
     {
-      "src": "pic/icon-192.png",
+      "src": "https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "pic/icon-512.png",
+      "src": "https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -27,13 +27,8 @@
   "shortcuts": [
     {
       "name": "קביעת תור",
-      "url": "/index.html#booking",
-      "icons": [{ "src": "pic/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "גלריה",
-      "url": "/index.html#gallery",
-      "icons": [{ "src": "pic/icon-192.png", "sizes": "192x192" }]
+      "url": "./index.html#booking",
+      "icons": [{ "src": "https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
