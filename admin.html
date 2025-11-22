@@ -126,7 +126,6 @@
             statusEl.innerText = '⏳ מסנכרן יומן...';
             statusEl.className = '';
             
-            // שימוש ב-redirect: 'follow' הוא ברירת המחדל, אבל חשוב לציין
             fetch(API_URL)
             .then(res => {
                 if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
@@ -143,9 +142,8 @@
                 statusEl.className = 'text-err';
                 console.error("Fetch Error:", err);
                 
-                // הודעת עזרה אם השגיאה היא CORS/401
                 if(err.message.includes('Failed to fetch') || err.message.includes('401')) {
-                    alert("שגיאת חיבור ליומן!\n\nסיבה אפשרית: הרשאות הסקריפט בגוגל אינן מוגדרות ל-'Anyone'.\n\nפתרון: כנסי לסקריפט > Deploy > Manage Deployments > עריכה > Who has access: Anyone > Deploy מחדש.");
+                    alert("שגיאת חיבור ליומן!\n\nהסיבה: חסימת הרשאות מגוגל.\n\nחובה לבצע:\n1. כנסי לסקריפט של גוגל\n2. לחצי Deploy > Manage Deployments\n3. לחצי על העיפרון (Edit)\n4. שנו את 'Who has access' ל-'Anyone'!\n5. לחצי Deploy והעתיקי את הקישור מחדש.");
                 }
             });
         }
@@ -174,16 +172,19 @@
             el.classList.add('loading');
             document.getElementById('sync-status').innerText = 'מעדכן סטטוס...';
 
-            const payload = JSON.stringify({ date: date, time: time, type: 'admin' });
+            const payload = JSON.stringify({ 
+                date: date, 
+                time: time, 
+                type: 'admin',
+                treatment: 'חסימה מנהלתית' // עדכון: שליחת סוג טיפול לחסימה מנהלתית
+            });
             
-            // שימוש ב-text/plain כדי למנוע שליחת preflight OPTIONS שגורמת ל-CORS
             fetch(API_URL, {
                 method: 'POST',
                 mode: 'no-cors', 
                 headers: { 'Content-Type': 'text/plain' },
                 body: payload
             }).then(() => {
-                // ב-no-cors אין תשובה אמיתית, אז מניחים שהצליח ומרעננים
                 setTimeout(() => {
                     fetchSlots();
                 }, 1500);
