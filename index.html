@@ -5,244 +5,228 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#f8f5f2">
-    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4af37">
+    <meta name="description" content="אפליקציית קביעת תורים - שירה קוסמטיקס הוד השרון">
     <title>שירה קוסמטיקס</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoi16LXmdeo15gg16fXldeh157XmdeY15nXp9XWIiwi\
-    c2hvcnRfbmFtZSI6Iteh15nXkdeUINeS15zXmdeVIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2Y4ZjVmMiIsInRo\
-    ZW1lX2NvbG9yIjoiI2Q0YWYzNyIsImljb25zIjpbeyJzcmMiOiJodHRwczovL3viaWEucGxhY2Vob2xkZXIuY29tLzE5MiIsInNpemVzIjoiMTkyeDE\
-    5MiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- CSS: עיצוב יוקרתי --- */
+        /* --- CSS: עיצוב פרימיום נשי --- */
         :root {
-            --primary-color: #d4af37; /* זהב */
-            --bg-color: #f8f5f2; /* פנינה */
-            --text-color: #333;
-            --card-bg: #ffffff;
+            --primary: #d4af37; /* זהב יוקרתי */
+            --primary-light: #f3e5ab;
+            --bg-body: #fcfbf9; /* פנינה */
+            --bg-card: #ffffff;
+            --text-main: #333333;
+            --text-muted: #777777;
             --accent-pink: #eebbc3;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --radius: 16px;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none; /* תחושת אפליקציה */
-        }
-
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
-            padding: 0;
-            padding-bottom: 80px; /* מקום לתפריט תחתון */
+            padding-bottom: 90px; /* מקום לתפריט */
             overflow-x: hidden;
         }
 
-        /* Header */
+        /* --- Header & Slider --- */
         header {
-            background: linear-gradient(135deg, #fff, #fdfbf7);
-            padding: 20px;
+            padding: 15px;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: #fff;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
+        h1 { margin: 0; color: var(--primary); font-size: 1.4rem; letter-spacing: 1px; font-weight: 700; }
+        .subtitle { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        /* Hero Section */
-        .hero {
+        /* Carousel Container */
+        .carousel-container {
             position: relative;
-            height: 200px;
-            background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg'); /* תמונת גבות כרקע */
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 20px;
+            width: 94%;
+            height: 220px;
+            margin: 15px auto;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
         }
-        .hero::after {
-            content: '';
+        .carousel-slide {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
         }
-        .hero-btn {
-            position: relative;
-            z-index: 2;
-            background: var(--primary-color);
-            color: #fff;
-            padding: 10px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
-        }
-
-        /* Quick Actions */
-        .quick-actions {
+        .carousel-slide.active { opacity: 1; }
+        
+        /* Overlay & Button on Slider */
+        .hero-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 20px;
             display: flex;
-            justify-content: space-around;
-            padding: 15px;
-            background: #fff;
-            margin-bottom: 10px;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100%;
         }
-        .action-btn {
+        .cta-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5);
+            transition: transform 0.2s;
+        }
+        .cta-btn:active { transform: scale(0.95); }
+
+        /* --- Quick Actions --- */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 15px;
+            margin-top: 10px;
+        }
+        .q-btn {
+            background: #fff;
+            padding: 12px;
+            border-radius: 12px;
             text-align: center;
             font-size: 0.8rem;
-            color: #555;
+            color: var(--text-muted);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             cursor: pointer;
         }
-        .action-btn i {
-            display: block;
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-            color: var(--primary-color);
-        }
+        .q-btn i { display: block; font-size: 1.4rem; margin-bottom: 5px; color: var(--primary); }
 
-        /* Catalog */
-        .section-title {
-            padding: 15px 20px 5px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .category-scroll {
-            display: flex;
-            overflow-x: auto;
-            padding: 10px 15px;
-            gap: 10px;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
-        }
-        .category-scroll::-webkit-scrollbar { display: none; }
-
-        .cat-chip {
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 8px 15px;
-            border-radius: 20px;
-            white-space: nowrap;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-        .cat-chip.active {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-
-        .treatment-list {
-            padding: 10px 15px;
-        }
-
-        .treatment-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        /* --- Section Titles --- */
+        .section-header {
+            padding: 25px 20px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .t-info h3 { margin: 0 0 5px; font-size: 1rem; }
-        .t-info p { margin: 0; color: #777; font-size: 0.9rem; }
-        .t-price { font-weight: bold; color: var(--primary-color); font-size: 1.1rem; }
-        .add-btn {
-            background: #f0f0f0;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
+        .section-title { font-size: 1.2rem; font-weight: 700; color: #222; }
+        .view-all { font-size: 0.85rem; color: var(--primary); cursor: pointer; }
 
-        /* Gallery Grid */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+        /* --- Treatment Cards --- */
+        .treatment-list { padding: 0 15px; }
+        .treatment-card {
+            background: #fff;
+            border-radius: var(--radius);
             padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-right: 3px solid var(--primary); /* פס זהב בצד */
         }
-        .gallery-item {
-            border-radius: 10px;
-            overflow: hidden;
-            height: 150px;
+        .t-content h3 { margin: 0 0 4px; font-size: 1rem; }
+        .t-desc { font-size: 0.8rem; color: #888; margin: 0 0 8px; max-width: 220px; line-height: 1.3; }
+        .t-meta { font-size: 0.8rem; color: var(--primary); font-weight: 600; }
+        .add-btn {
+            background: #f7f7f7;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            border: none;
+            color: var(--primary);
+            font-size: 1.4rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .add-btn:active { background: var(--primary-light); }
+
+        /* --- Reviews --- */
+        .reviews-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 15px 20px;
+            gap: 15px;
+            scrollbar-width: none;
+        }
+        .reviews-scroll::-webkit-scrollbar { display: none; }
+        
+        .review-card {
+            min-width: 260px;
+            background: #fff;
+            border-radius: var(--radius);
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+            position: relative;
+        }
+        .r-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .r-avatar { width: 35px; height: 35px; background: var(--primary-light); border-radius: 50%; color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .r-name { font-size: 0.9rem; font-weight: bold; }
+        .r-loc { font-size: 0.75rem; color: #999; }
+        .r-stars { color: #FFD700; font-size: 0.8rem; margin-bottom: 8px; }
+        .r-text { font-size: 0.85rem; color: #555; line-height: 1.4; }
+        .google-badge { position: absolute; top: 15px; left: 15px; width: 15px; opacity: 0.6; }
+
+        /* --- Calendar UI --- */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .time-slot {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .time-slot.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
         }
 
-        /* Bottom Nav */
+        /* --- Bottom Nav --- */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            width: 100%;
+            bottom: 0; width: 100%;
             background: #fff;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 1px solid #eee;
-            z-index: 999;
+            display: flex; justify-content: space-around;
+            padding: 10px 0 15px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            z-index: 200;
         }
-        .nav-item {
-            text-align: center;
-            color: #aaa;
-            font-size: 0.7rem;
-            cursor: pointer;
-        }
-        .nav-item.active { color: var(--primary-color); }
-        .nav-item i { display: block; font-size: 1.4rem; margin-bottom: 3px; }
+        .nav-item { text-align: center; color: #bbb; font-size: 0.7rem; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { display: block; font-size: 1.3rem; margin-bottom: 4px; }
         
-        /* Cart Badge */
+        /* Badge */
         .cart-badge {
-            position: absolute;
-            top: -5px;
-            right: 10px;
-            background: red;
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            display: none; /* מוסתר כברירת מחדל */
+            position: absolute; top: -5px; right: -5px;
+            background: #ff4757; color: white;
+            font-size: 0.65rem; width: 16px; height: 16px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
         }
 
-        /* Views Logic */
-        .view { display: none; animation: fadeIn 0.3s; }
+        /* Views */
+        .view { display: none; animation: fadeIn 0.4s; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Booking Form */
-        .booking-form { padding: 20px; background: #fff; margin: 15px; border-radius: 10px; }
-        input, select {
-            width: 100%; padding: 12px; margin-bottom: 15px;
-            border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
-        }
-        .submit-btn {
-            width: 100%; background: #25D366; color: white; padding: 15px;
-            border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
@@ -250,224 +234,322 @@
 
     <header>
         <h1>SHIRA COSMETICS</h1>
+        <div class="subtitle">קליניקת בוטיק לאסתטיקה מתקדמת</div>
     </header>
 
     <div id="view-home" class="view active">
-        <div class="hero">
-            <a href="#" onclick="switchView('booking')" class="hero-btn">הזמיני תור עכשיו</a>
+        
+        <div class="carousel-container">
+            <div class="carousel-slide active" style="background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg');"></div>
+            <div class="carousel-slide" style="background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.55 PM.jpeg');"></div>
+            <div class="carousel-slide" style="background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.54 PM.jpeg');"></div>
+            
+            <div class="hero-overlay">
+                <a href="#" onclick="switchView('booking')" class="cta-btn">הזמיני תור לפינוק שלך ✨</a>
+            </div>
         </div>
 
         <div class="quick-actions">
-            <div class="action-btn" onclick="window.location.href='tel:0500000000'">
-                <i class="fas fa-phone"></i> חיוג
+            <div class="q-btn" onclick="window.location.href='tel:+972538268067'">
+                <i class="fas fa-phone-alt"></i> חיוג
             </div>
-            <div class="action-btn" onclick="window.location.href='https://waze.com/ul?q=Shehet+HaYamim+39a+Hod+Hasharon'">
-                <i class="fas fa-location-arrow"></i> ניווט
+            <div class="q-btn" onclick="window.location.href='https://waze.com/ul?q=Shehet+HaYamim+39a+Hod+Hasharon'">
+                <i class="fas fa-map-marker-alt"></i> ניווט
             </div>
-            <div class="action-btn" onclick="window.open('https://wa.me/972500000000', '_blank')">
+            <div class="q-btn" onclick="openWhatsapp()">
                 <i class="fab fa-whatsapp"></i> הודעה
             </div>
         </div>
 
-        <div class="section-title">הטיפולים שלנו</div>
-        <div class="category-scroll">
-            <div class="cat-chip active" onclick="filterTreatments('all')">הכל</div>
-            <div class="cat-chip" onclick="filterTreatments('nails')">ציפורניים</div>
-            <div class="cat-chip" onclick="filterTreatments('face')">גבות וריסים</div>
+        <div class="section-header">
+            <div class="section-title">טיפולים מבוקשים</div>
+            <div class="view-all" onclick="switchView('booking')">לכל הטיפולים</div>
+        </div>
+        
+        <div class="treatment-list">
+            <div class="treatment-card">
+                <div class="t-content">
+                    <h3>מיקרובליידינג</h3>
+                    <div class="t-desc">עיצוב גבות בשיטת השערה, כולל 2 מפגשים לתוצאה מושלמת.</div>
+                    <div class="t-meta">₪1,100 • 120 דקות</div>
+                </div>
+                <button class="add-btn" onclick="addToCart(7)">+</button>
+            </div>
+            <div class="treatment-card">
+                <div class="t-content">
+                    <h3>לק ג'ל ומניקור</h3>
+                    <div class="t-desc">ניקוי יסודי, מבנה אנטומי ומריחת ג'ל איכותי ועמיד.</div>
+                    <div class="t-meta">₪140 • 60 דקות</div>
+                </div>
+                <button class="add-btn" onclick="addToCart(1)">+</button>
+            </div>
         </div>
 
-        <div id="treatment-list-container" class="treatment-list">
+        <div class="section-header">
+            <div class="section-title">לקוחות ממליצות</div>
+            <div class="view-all"><i class="fas fa-star" style="color:#FFD700;"></i> 5.0</div>
+        </div>
+        
+        <div class="reviews-scroll">
+            <div class="review-card">
+                <div class="r-header">
+                    <div class="r-avatar">י</div>
+                    <div>
+                        <div class="r-name">יעל כהן</div>
+                        <div class="r-loc">הוד השרון</div>
+                    </div>
+                </div>
+                <div class="r-stars">⭐⭐⭐⭐⭐</div>
+                <div class="r-text">"שירה היא קוסמת! הגעתי עם גבות הרוסות והיא עשתה לי שיקום מדהים. היחס אישי והקליניקה נקייה ונעימה."</div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" class="google-badge" alt="G">
             </div>
-    </div>
-
-    <div id="view-gallery" class="view">
-        <div class="section-title">תיק עבודות</div>
-        <div class="gallery-grid" id="gallery-container">
+            <div class="review-card">
+                <div class="r-header">
+                    <div class="r-avatar">מ</div>
+                    <div>
+                        <div class="r-name">מיכל לוי</div>
+                        <div class="r-loc">רעננה</div>
+                    </div>
+                </div>
+                <div class="r-stars">⭐⭐⭐⭐⭐</div>
+                <div class="r-text">"עשיתי אצל שירה סדרת טיפולי פנים והעור שלי פשוט זוהר. אין דברים כאלה, ממליצה בחום לכל מי שרוצה איכות."</div>
             </div>
+            <div class="review-card">
+                <div class="r-header">
+                    <div class="r-avatar">ד</div>
+                    <div>
+                        <div class="r-name">דנה אברהם</div>
+                        <div class="r-loc">אלישמע</div>
+                    </div>
+                </div>
+                <div class="r-stars">⭐⭐⭐⭐⭐</div>
+                <div class="r-text">"הציפורניים שלי מעולם לא נראו טוב יותר. מחזיק לי 4 שבועות בלי לזוז! תודה שירה אהובה!"</div>
+            </div>
+        </div>
     </div>
 
     <div id="view-booking" class="view">
-        <div class="section-title">הטיפול שלי</div>
-        <div id="cart-items" style="padding: 0 20px;">
-            <p style="text-align:center; color:#999;">הסל ריק, הוסיפי טיפולים ממסך הבית :)</p>
+        <div class="section-header">
+            <div class="section-title">קביעת תור חדש</div>
         </div>
-        
-        <div class="booking-form" id="booking-form-container" style="display:none;">
-            <h3>פרטים לקביעת תור</h3>
-            <input type="text" id="c-name" placeholder="שם מלא">
-            <input type="datetime-local" id="c-date">
-            <button class="submit-btn" onclick="sendToWhatsapp()">
-                <i class="fab fa-whatsapp"></i> שלחי בקשה בווצאף
-            </button>
-            <p style="font-size:0.8rem; color:#777; text-align:center; margin-top:10px;">
-                * לחיצה תעביר אותך לווצאף לאישור סופי מול שירה
-            </p>
+
+        <div class="treatment-list" id="full-catalog">
+            </div>
+
+        <div id="booking-interface" style="background:#fff; margin-top:20px; padding:20px; border-radius:20px 20px 0 0; box-shadow:0 -4px 20px rgba(0,0,0,0.05);">
+            <div class="section-title" style="margin-bottom:15px;">הבחירות שלך</div>
+            <div id="cart-items-display" style="margin-bottom:20px; color:#777;">טרם נבחרו טיפולים</div>
+            
+            <div id="calendar-section" style="display:none;">
+                <div class="section-title">מתי נוח לך?</div>
+                <input type="date" id="date-picker" style="width:100%; padding:10px; margin:10px 0; border:1px solid #ddd; border-radius:8px;" onchange="generateSlots()">
+                
+                <div class="calendar-grid" id="slots-container">
+                    </div>
+
+                <input type="text" id="client-name" placeholder="השם המלא שלך" style="width:100%; padding:12px; margin-top:20px; border:1px solid #ddd; border-radius:8px;">
+                
+                <button onclick="finalizeBooking()" style="width:100%; background:#25D366; color:white; padding:15px; border:none; border-radius:12px; font-weight:bold; margin-top:15px; font-size:1.1rem;">
+                    <i class="fab fa-whatsapp"></i> אשרי הזמנה בווצאף
+                </button>
+            </div>
         </div>
     </div>
 
+    <div id="view-gallery" class="view">
+        <div class="section-header">
+            <div class="section-title">תיק עבודות</div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:15px;" id="gallery-grid">
+            </div>
+    </div>
+
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchView('home'); updateNav(this)">
+        <div class="nav-item active" onclick="switchView('home'); highlightNav(this)">
             <i class="fas fa-home"></i> ראשי
         </div>
-        <div class="nav-item" onclick="switchView('gallery'); updateNav(this)">
+        <div class="nav-item" onclick="switchView('gallery'); highlightNav(this)">
             <i class="fas fa-images"></i> גלריה
         </div>
-        <div class="nav-item" style="position: relative;" onclick="switchView('booking'); updateNav(this)">
+        <div class="nav-item" style="position:relative" onclick="switchView('booking'); highlightNav(this)">
             <i class="fas fa-calendar-check"></i> תורים
-            <div id="nav-cart-badge" class="cart-badge">0</div>
+            <div class="cart-badge" id="nav-badge" style="display:none">0</div>
+        </div>
+        <div class="nav-item" onclick="openReview()">
+            <i class="fas fa-star"></i> דרגי
         </div>
     </nav>
 
     <script>
-        /* --- JS: לוגיקה של האפליקציה --- */
+        /* --- CONFIG --- */
+        const PHONE_NUMBER = "972538268067"; // המספר המעודכן
+        const EMAIL = "shirapp2025@gmail.com";
 
-        // 1. נתונים (Data)
+        /* --- DATA --- */
         const treatments = [
-            { id: 1, name: "לק ג'ל", price: 140, category: "nails" },
-            { id: 2, name: "מילוי בג'ל", price: 150, category: "nails" },
-            { id: 3, name: "בניית ציפורניים", price: 300, category: "nails" },
-            { id: 4, name: "עיצוב גבות", price: 70, category: "face" },
-            { id: 5, name: "הרמת ריסים", price: 250, category: "face" },
-            { id: 6, name: "הרמת גבות", price: 200, category: "face" },
-            { id: 7, name: "מיקרובליידינג (2 טיפולים)", price: 1100, category: "face" }
+            { id: 1, name: "לק ג'ל", price: 140, time: "60 דק'", desc: "מניקור יסודי ומריחת ג'ל איכותי" },
+            { id: 2, name: "מילוי בג'ל", price: 150, time: "75 דק'", desc: "חידוש המבנה והצבע" },
+            { id: 3, name: "בניית ציפורניים", price: 300, time: "120 דק'", desc: "הארכה ופיסול בג'ל או אקריל" },
+            { id: 4, name: "עיצוב גבות", price: 70, time: "30 דק'", desc: "התאמה למבנה הפנים וניקוי" },
+            { id: 5, name: "הרמת ריסים", price: 250, time: "60 דק'", desc: "סלסול והדגשה טבעית" },
+            { id: 6, name: "הרמת גבות", price: 200, time: "45 דק'", desc: "סידור וקיבוע השיער כלפי מעלה" },
+            { id: 7, name: "מיקרובליידינג", price: 1100, time: "מפגש כפול", desc: "שיטת השערה (כולל חיזוק)" }
         ];
 
-        // שמות הקבצים שהעלית - יש לוודא שהם בתיקיית pic
-        const galleryImages = [
+        const images = [
+            "pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg",
             "pic/WhatsApp Image 2025-11-22 at 3.19.55 PM.jpeg",
             "pic/WhatsApp Image 2025-11-22 at 3.19.54 PM.jpeg",
             "pic/WhatsApp Image 2025-11-22 at 3.19.53 PM.jpeg",
             "pic/WhatsApp Image 2025-11-22 at 3.19.52 PM.jpeg",
-            "pic/WhatsApp Image 2025-11-22 at 3.19.51 PM.jpeg",
-            "pic/WhatsApp Image 2025-11-22 at 3.19.50 PM.jpeg"
+            "pic/WhatsApp Image 2025-11-22 at 3.19.51 PM.jpeg"
         ];
 
         let cart = [];
+        let selectedSlot = null;
 
-        // 2. אתחול (Init)
+        /* --- INIT --- */
         document.addEventListener('DOMContentLoaded', () => {
-            renderTreatments('all');
+            startSlider();
+            renderCatalog();
             renderGallery();
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('date-picker').valueAsDate = tomorrow;
         });
 
-        // 3. רינדור טיפולים
-        function renderTreatments(filter) {
-            const container = document.getElementById('treatment-list-container');
+        /* --- SLIDER LOGIC --- */
+        function startSlider() {
+            let slides = document.querySelectorAll('.carousel-slide');
+            let index = 0;
+            setInterval(() => {
+                slides[index].classList.remove('active');
+                index = (index + 1) % slides.length;
+                slides[index].classList.add('active');
+            }, 3000); // כל 3 שניות
+        }
+
+        /* --- RENDER FUNCTIONS --- */
+        function renderCatalog() {
+            const container = document.getElementById('full-catalog');
             container.innerHTML = '';
-            
-            const filtered = filter === 'all' ? treatments : treatments.filter(t => t.category === filter);
-
-            filtered.forEach(t => {
-                const div = document.createElement('div');
-                div.className = 'treatment-card';
-                div.innerHTML = `
-                    <div class="t-info">
+            treatments.forEach(t => {
+                container.innerHTML += `
+                <div class="treatment-card">
+                    <div class="t-content">
                         <h3>${t.name}</h3>
-                        <p>טיפול מקצועי ומפנק</p>
+                        <div class="t-desc">${t.desc}</div>
+                        <div class="t-meta">₪${t.price} • ${t.time}</div>
                     </div>
-                    <div style="text-align:left;">
-                        <div class="t-price">₪${t.price}</div>
-                        <button class="add-btn" onclick="addToCart(${t.id})">+</button>
-                    </div>
-                `;
-                container.appendChild(div);
+                    <button class="add-btn" onclick="addToCart(${t.id})">+</button>
+                </div>`;
             });
         }
 
-        function filterTreatments(category) {
-            // Update chips UI
-            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            renderTreatments(category);
-        }
-
-        // 4. רינדור גלריה
         function renderGallery() {
-            const container = document.getElementById('gallery-container');
-            galleryImages.forEach(src => {
-                const div = document.createElement('div');
-                div.className = 'gallery-item';
-                div.innerHTML = `<img src="${src}" alt="עבודה לדוגמה" loading="lazy">`;
-                container.appendChild(div);
+            const container = document.getElementById('gallery-grid');
+            images.forEach(src => {
+                container.innerHTML += `
+                <div style="height:160px; border-radius:12px; overflow:hidden;">
+                    <img src="${src}" style="width:100%; height:100%; object-fit:cover;">
+                </div>`;
             });
         }
 
-        // 5. ניהול סל (Cart Logic)
+        /* --- CART & BOOKING LOGIC --- */
         function addToCart(id) {
             const item = treatments.find(t => t.id === id);
-            cart.push(item);
-            updateCartUI();
-            alert('הוסף לטיפול: ' + item.name);
+            if(!cart.includes(item)) {
+                cart.push(item);
+                updateCartUI();
+                switchView('booking');
+                // Scroll to bottom to see calendar
+                document.getElementById('booking-interface').scrollIntoView({behavior: 'smooth'});
+            }
         }
 
         function updateCartUI() {
-            // Update Badge
-            const badge = document.getElementById('nav-cart-badge');
-            if (cart.length > 0) {
-                badge.style.display = 'flex';
-                badge.innerText = cart.length;
-            } else {
-                badge.style.display = 'none';
-            }
-
-            // Update Cart View
-            const container = document.getElementById('cart-items');
-            const form = document.getElementById('booking-form-container');
+            const display = document.getElementById('cart-items-display');
+            const badge = document.getElementById('nav-badge');
+            const calSection = document.getElementById('calendar-section');
             
             if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#999;">הסל ריק, הוסיפי טיפולים ממסך הבית :)</p>';
-                form.style.display = 'none';
+                display.innerHTML = 'הסל ריק';
+                badge.style.display = 'none';
+                calSection.style.display = 'none';
             } else {
-                let html = '';
-                let total = 0;
-                cart.forEach((item, index) => {
-                    html += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:10px 0;">
-                                <span>${item.name}</span>
-                                <b>₪${item.price}</b>
-                             </div>`;
-                    total += item.price;
-                });
-                html += `<div style="margin-top:15px; font-size:1.2rem; font-weight:bold; text-align:left;">סה"כ: ₪${total}</div>`;
-                container.innerHTML = html;
-                form.style.display = 'block';
+                display.innerHTML = cart.map(i => `<div>✅ ${i.name} (₪${i.price})</div>`).join('');
+                const total = cart.reduce((acc, item) => acc + item.price, 0);
+                display.innerHTML += `<div style="margin-top:10px; font-weight:bold; color:var(--primary);">סה"כ לתשלום: ₪${total}</div>`;
+                
+                badge.style.display = 'flex';
+                badge.innerText = cart.length;
+                calSection.style.display = 'block';
+                generateSlots();
             }
         }
 
-        // 6. ניווט (Navigation)
+        function generateSlots() {
+            // Simple logic to simulate open slots
+            const container = document.getElementById('slots-container');
+            container.innerHTML = '';
+            const times = ['09:00', '10:30', '12:00', '14:00', '15:30', '17:00', '18:30'];
+            
+            times.forEach(time => {
+                const div = document.createElement('div');
+                div.className = 'time-slot';
+                div.innerText = time;
+                div.onclick = () => {
+                    document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                    selectedSlot = time;
+                };
+                container.appendChild(div);
+            });
+        }
+
+        function finalizeBooking() {
+            const name = document.getElementById('client-name').value;
+            const date = document.getElementById('date-picker').value;
+            
+            if(!name || !selectedSlot || cart.length === 0) {
+                alert("אני צריכה שתבחרי שעה ותמלאי את השם שלך אהובה ❤️");
+                return;
+            }
+
+            let msg = `היי שירה! כאן ${name}.\nאשמח לקבוע תור ב-${date} בשעה ${selectedSlot}.\n\n*הטיפולים שלי:* \n`;
+            cart.forEach(c => msg += `- ${c.name}\n`);
+            msg += `\n(נשלח מהאפליקציה)`;
+
+            window.open(`https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            // Simulate email notification (client side only)
+            console.log(`Sending email simulation to ${EMAIL}`);
+        }
+
+        function openWhatsapp() {
+            window.open(`https://wa.me/${PHONE_NUMBER}`, '_blank');
+        }
+        
+        function openReview() {
+             window.open(`https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID`, '_blank');
+             // Note: replace YOUR_PLACE_ID with real ID if available
+        }
+
+        /* --- NAV LOGIC --- */
         function switchView(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + viewName).classList.add('active');
             window.scrollTo(0,0);
         }
 
-        function updateNav(elem) {
+        function highlightNav(elem) {
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             elem.classList.add('active');
         }
 
-        // 7. שליחה לווצאף (Checkout)
-        function sendToWhatsapp() {
-            const name = document.getElementById('c-name').value;
-            const date = document.getElementById('c-date').value;
-
-            if (!name || !date || cart.length === 0) {
-                alert('אנא מלאי את כל הפרטים והוסיפי טיפולים :)');
-                return;
-            }
-
-            let message = `היי שירה! כאן ${name}.\nאשמח לקבוע תור לתאריך ${date.replace('T', ' ב-')}.\n\n*הטיפולים שבחרתי:* \n`;
-            cart.forEach(item => {
-                message += `- ${item.name} (₪${item.price})\n`;
-            });
-            
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
-            message += `\n*סה"כ לתשלום משוער: ₪${total}*`;
-
-            const phone = '972500000000'; // *** נא להחליף למספר האמיתי שלך ***
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            
-            window.open(url, '_blank');
-        }
     </script>
 </body>
 </html>
