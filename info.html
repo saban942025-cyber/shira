@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>שירה קוסמטיקס - המדריך לאפליקציה החדשה שלך</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #d4af37; --bg: #fcfbf9; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        
+        /* Header */
+        .header { text-align: center; padding: 40px 20px; background: white; border-bottom: 4px solid var(--primary); margin-bottom: 30px; }
+        .header img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; margin-bottom: 15px; }
+        .header h1 { color: var(--primary); margin: 0; font-size: 2rem; }
+        .header p { font-size: 1.1rem; color: #666; }
+
+        /* Card Style */
+        .section { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        .section h2 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        
+        /* Step List */
+        .steps { list-style: none; padding: 0; }
+        .steps li { margin-bottom: 15px; display: flex; gap: 15px; }
+        .step-num { background: var(--primary); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        
+        /* Simulation Box */
+        .phone-mockup { background: #333; border-radius: 30px; padding: 10px; max-width: 300px; margin: 20px auto; color: white; text-align: center; border: 4px solid #555; }
+        .screen { background: #fff; color: #333; border-radius: 20px; padding: 15px; height: 400px; overflow-y: auto; position: relative; }
+        .msg-bubble { background: #dcf8c6; padding: 10px; border-radius: 10px; margin-bottom: 10px; text-align: right; font-size: 0.9rem; position: relative; }
+        .msg-bubble::after { content: ''; position: absolute; top: 0; right: -10px; border: 10px solid transparent; border-top-color: #dcf8c6; border-left-color: #dcf8c6; }
+
+        /* Link Box */
+        .link-box { background: #e8f5e9; border: 1px solid #c8e6c9; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; color: #2e7d32; margin-top: 10px; word-break: break-all; }
+        
+        .btn-action { display: inline-block; background: var(--primary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 25px; margin-top: 10px; font-weight: bold; transition: 0.3s; }
+        .btn-action:hover { background: #b5952f; }
+
+        /* Future Tools */
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px; }
+        .tool-card { background: #f9f9f9; padding: 15px; text-align: center; border-radius: 10px; border: 1px solid #eee; }
+        .tool-icon { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+        
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.5rem; }
+            .container { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <!-- הלוגו של שירה -->
+        <img src="https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png" alt="Shira Cosmetics Logo">
+        <h1>מזל טוב שירה! 🎉</h1>
+        <p>האפליקציה החדשה שלך מוכנה להמראה.</p>
+        <a href="https://did.li/HmLgT" class="btn-action" target="_blank">לצפייה באפליקציה >></a>
+    </div>
+
+    <div class="container">
+
+        <!-- מה עושים מחר בבוקר -->
+        <div class="section">
+            <h2><i class="fas fa-sun"></i> מתחילים מחר בבוקר!</h2>
+            <p>שירה יקרה, האפליקציה שלך חיה ובועטת. הנה מה שאת יכולה לעשות כבר עכשיו:</p>
+            <ul class="steps">
+                <li>
+                    <div class="step-num">1</div>
+                    <div>
+                        <strong>פרסום הלינק בביו (Bio):</strong>
+                        העתיקי את הקישור למטה ושימי אותו בפרופיל האינסטגרם והפייסבוק שלך במקום "קביעת תורים בטלפון".
+                        <div class="link-box">https://did.li/HmLgT</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="step-num">2</div>
+                    <div>
+                        <strong>סטורי חגיגי:</strong>
+                        צלמי מסך של האפליקציה היפה שלך, תעלי לסטורי ותכתבי: "מהיום קובעים תורים בקלות ובסטייל! הלינק בביו ✨".
+                    </div>
+                </li>
+                <li>
+                    <div class="step-num">3</div>
+                    <div>
+                        <strong>הודעת תפוצה:</strong>
+                        שלחי ללקוחות הקבועות בווצאף: "אהובה, התחדשתי באפליקציה! מעכשיו את יכולה לראות מתי אני פנויה ולשריין לעצמך תור בקליק. נשיקות 😘".
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- סימולציית לקוחה -->
+        <div class="section">
+            <h2><i class="fas fa-mobile-alt"></i> המסע של הלקוחה (סימולציה)</h2>
+            <p>ככה זה נראה מהצד של הלקוחה "נועה" שנכנסת לאפליקציה:</p>
+            
+            <div class="phone-mockup">
+                <div class="screen">
+                    <!-- שלב 1 -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png" width="50" style="border-radius:50%;">
+                        <div style="font-weight:bold; color:var(--primary);">שירה קוסמטיקס</div>
+                    </div>
+                    
+                    <!-- שלב 2 -->
+                    <div class="msg-bubble" style="background:#fff; text-align:right; border:1px solid #eee;">
+                        <strong>1. נועה בוחרת טיפול:</strong><br>
+                        לוחצת על "לק ג'ל" (₪140).<br>
+                        <i class="fas fa-hand-pointer" style="color:var(--primary);"></i> הוסף לסל
+                    </div>
+
+                    <!-- שלב 3 -->
+                    <div class="msg-bubble" style="background:#fff; text-align:right; border:1px solid #eee;">
+                        <strong>2. נועה בוחרת זמן:</strong><br>
+                        רואה ביומן שיום שלישי ב-12:00 פנוי.<br>
+                        לוחצת על השעה.
+                    </div>
+
+                    <!-- שלב 4 -->
+                    <div class="msg-bubble">
+                        <strong>3. סיום ושליחה:</strong><br>
+                        נועה מזינה שם וטלפון ולוחצת "שלח".<br>
+                        הודעה קופצת לה לווצאף שלך:
+                        <br><br>
+                        "היי שירה! כאן נועה... אשמח לקבוע תור ללק ג'ל..."
+                    </div>
+                    
+                    <div style="font-size:0.8rem; color:#999; margin-top:10px;">* במקביל התור נרשם ביומן הניהול שלך!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- העתיד -->
+        <div class="section">
+            <h2><i class="fas fa-rocket"></i> לאן ממשיכים מכאן? (שידרוגים)</h2>
+            <p>ראמי בנה לך תשתית חזקה. הנה רעיונות לשדרוגים עתידיים כשהעסק יגדל:</p>
+            
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon"><i class="fas fa-bell"></i></div>
+                    <strong>תזכורות SMS</strong>
+                    שליחה אוטומטית יום לפני הטיפול כדי למנוע הברזות.
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon"><i class="fas fa-store"></i></div>
+                    <strong>חנות מוצרים</strong>
+                    מכירת קרמים, שמנים ומוצרים משלימים ישירות באפליקציה.
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon"><i class="fas fa-gift"></i></div>
+                    <strong>מועדון לקוחות</strong>
+                    כרטיס ניקוב דיגיטלי (טיפול עשירי חינם) שנשמר באפליקציה.
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon"><i class="fas fa-chart-line"></i></div>
+                    <strong>דוחות ניהול</strong>
+                    גרפים שמראים איזה טיפול הכי נמכר וכמה הכנסת החודש.
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center; margin-top:30px; font-size:0.9rem; color:#888;">
+            נבנה באהבה ובמקצועיות ע"י ראמי & Gemini AI 🤖❤️<br>
+            בהצלחה שירה!
+        </div>
+
+    </div>
+
+</body>
+</html>
