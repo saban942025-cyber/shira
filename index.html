@@ -291,13 +291,14 @@
 
         // --- RENDERING ---
         function renderTreatments() {
+            // FIX: מעבירים את ה-ID במקום את השם כדי למנוע בעיות עם גרשיים
             const html = treatments.map(t => `
                 <div class="treatment-card">
                     <div>
                         <div style="font-weight:bold;">${t.name}</div>
                         <div style="color:var(--primary);">₪${t.price}</div>
                     </div>
-                    <button class="add-btn" onclick="addToCart('${t.name}', ${t.price})">+</button>
+                    <button class="add-btn" onclick="addToCart(${t.id})">+</button>
                 </div>
             `).join('');
             document.getElementById('catalog-preview').innerHTML = html;
@@ -311,10 +312,14 @@
         }
 
         // --- BOOKING LOGIC ---
-        function addToCart(name, price) {
-            cart.push({name, price});
-            updateCartUI();
-            switchView('booking');
+        // FIX: הפונקציה מקבלת כעת ID
+        function addToCart(id) {
+            const item = treatments.find(t => t.id === id);
+            if(item) {
+                cart.push(item);
+                updateCartUI();
+                switchView('booking');
+            }
         }
 
         function updateCartUI() {
