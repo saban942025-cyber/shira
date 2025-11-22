@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ניהול יומן - שירה קוסמטיקס</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #d4af37; --bg: #fcfbf9; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
+        h2 { color: var(--primary); margin: 10px 0; }
+        
+        .control-panel { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        label { display: block; margin-bottom: 10px; font-weight: bold; }
+        input[type="date"] { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; font-size: 1rem; }
+        
+        .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .slot { 
+            padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s;
+            background: #e8f5e9; /* ירוק - פנוי */
+        }
+        .slot.blocked {
+            background: #ffcdd2; /* אדום - חסום/תפוס */
+            color: #c62828;
+            border-color: #e57373;
+        }
+        .slot i { display: block; margin-bottom: 5px; font-size: 1.2rem; }
+        
+        .legend { display: flex; gap: 15px; margin-top: 20px; font-size: 0.9rem; justify-content: center; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; }
+        
+        .save-msg { text-align: center; color: green; margin-top: 10px; display: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png" alt="Logo">
+        <h2>ניהול יומן תורים</h2>
+        <p>לחצי על שעה כדי לחסום או לפתוח אותה</p>
+    </div>
+
+    <div class="control-panel">
+        <label>בחרי תאריך לניהול:</label>
+        <input type="date" id="admin-date" onchange="loadDay()">
+
+        <div class="slots-grid" id="admin-slots">
+            <!-- Slots injected here -->
+        </div>
+
+        <div class="legend">
+            <div><span class="dot" style="background:#e8f5e9; border:1px solid #ddd;"></span>פנוי ללקוחות</div>
+            <div><span class="dot" style="background:#ffcdd2;"></span>חסום/תפוס</div>
+        </div>
+        
+        <div id="save-msg" class="save-msg">השינויים נשמרו אוטומטית!</div>
+    </div>
+
+    <script>
+        const HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+        
+        // אתחול תאריך להיום
+        document.getElementById('admin-date').valueAsDate = new Date();
+
+        function loadDay() {
+            const date = document.getElementById('admin-date').value;
+            const container = document.getElementById('admin-slots');
+            container.innerHTML = '';
+
+            // טעינת נתונים קיימים
+            const storedData = JSON.parse(localStorage.getItem('shira_schedule')) || {};
+            const dayData = storedData[date] || []; // מערך של שעות חסומות
+
+            HOURS.forEach(time => {
+                const div = document.createElement('div');
+                const isBlocked = dayData.includes(time);
+                
+                div.className = isBlocked ? 'slot blocked' : 'slot';
+                div.innerHTML = isBlocked ? `<i class="fas fa-lock"></i> ${time}` : `<i class="fas fa-check"></i> ${time}`;
+                
+                div.onclick = () => toggleSlot(date, time);
+                container.appendChild(div);
+            });
+        }
+
+        function toggleSlot(date, time) {
+            const storedData = JSON.parse(localStorage.getItem('shira_schedule')) || {};
+            let dayData = storedData[date] || [];
+
+            if (dayData.includes(time)) {
+                // שחרור חסימה
+                dayData = dayData.filter(t => t !== time);
+            } else {
+                // הוספת חסימה
+                dayData.push(time);
+            }
+
+            storedData[date] = dayData;
+            localStorage.setItem('shira_schedule', JSON.stringify(storedData));
+            
+            // עדכון תצוגה והודעת שמירה
+            loadDay();
+            showSaveMsg();
+        }
+
+        function showSaveMsg() {
+            const msg = document.getElementById('save-msg');
+            msg.style.display = 'block';
+            setTimeout(() => msg.style.display = 'none', 2000);
+        }
+
+        // טעינה ראשונית
+        loadDay();
+    </script>
+</body>
+</html>
