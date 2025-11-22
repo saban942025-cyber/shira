@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- עיצוב יוקרתי (שמרתי על הקו הנקי מהגרסה הקודמת) --- */
+        /* --- עיצוב יוקרתי --- */
         :root {
             --primary: #d4af37;
             --primary-light: #f3e5ab;
@@ -50,7 +50,7 @@
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); cursor: pointer;
         }
         .btn-whatsapp { background: #25D366; }
-        .btn-calendar { background: #4285F4; margin-top: 10px; display: none; } /* מוסתר בהתחלה */
+        .btn-calendar { background: #4285F4; margin-top: 10px; display: none; }
 
         input, textarea, select {
             width: 100%; padding: 12px; margin: 8px 0;
@@ -111,15 +111,26 @@
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* התקנה */
-        #install-prompt {
+        /* --- מסך התקנה חוסם (אגרסיבי) --- */
+        #install-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 9999; display: none;
-            align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.95); z-index: 10000;
+            display: none; /* מופעל ב-JS */
+            flex-direction: column; align-items: center; justify-content: center;
+            color: white; text-align: center; padding: 30px;
         }
-        .install-modal {
-            background: white; padding: 30px; border-radius: 20px; text-align: center; width: 85%;
-        }
+        .install-content img { width: 80px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        .install-content h2 { margin: 0 0 10px; color: var(--primary); }
+        .install-content p { font-size: 1.1rem; line-height: 1.5; margin-bottom: 30px; color: #eee; }
+        
+        /* הוראות ספציפיות */
+        .ios-instructions { display: none; background: #333; padding: 15px; border-radius: 10px; margin-top: 20px; }
+        .ios-step { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-size: 0.9rem; text-align: right; }
+        .ios-icon { font-size: 1.4rem; color: #4285F4; }
+        
+        .android-btn { background: white; color: black; font-weight: bold; padding: 15px 40px; border-radius: 30px; font-size: 1.2rem; border: none; margin-top: 20px; cursor: pointer; }
+
+        .close-install { margin-top: 40px; font-size: 0.9rem; color: #777; text-decoration: underline; cursor: pointer; }
 
     </style>
 </head>
@@ -177,7 +188,6 @@
                     <i class="fab fa-whatsapp"></i> שלחי לאישור בווצאף
                 </button>
 
-                <!-- כפתור הוספה ליומן שמופיע רק אחרי שליחה -->
                 <button id="btn-add-calendar" class="btn-main btn-calendar" onclick="addToGoogleCalendar()">
                     <i class="fas fa-calendar-plus"></i> שמרי ביומן שלך
                 </button>
@@ -191,7 +201,7 @@
         <div id="gallery-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 15px;"></div>
     </div>
 
-    <!-- VIEW: RATE US (NEW) -->
+    <!-- VIEW: RATE US -->
     <div id="view-rate" class="view">
         <div style="padding: 20px;">
             <h2>דרגי את החוויה שלך</h2>
@@ -237,13 +247,34 @@
         </div>
     </nav>
 
-    <!-- Install Prompt Overlay -->
-    <div id="install-prompt">
-        <div class="install-modal">
-            <img src="pic/icon-192.png" style="width: 60px; border-radius: 15px; margin-bottom: 15px;">
-            <h3>התקיני את האפליקציה</h3>
-            <p>לקביעת תורים מהירה וגישה נוחה, הוסיפי את שירה קוסמטיקס למסך הבית שלך.</p>
-            <button class="btn-main" onclick="hideInstallPrompt()" style="margin-top: 10px;">הבנתי, תודה</button>
+    <!-- Install Overlay (The "Forced" Part) -->
+    <div id="install-overlay">
+        <div class="install-content">
+            <img src="pic/icon-192.png" alt="Logo">
+            <h2>התקנת האפליקציה</h2>
+            <p>כדי לקבוע תורים ולהנות מהטבות, יש להתקין את האפליקציה למכשיר.</p>
+            
+            <!-- Android Button -->
+            <button id="android-install-btn" class="android-btn" style="display:none;" onclick="triggerAndroidInstall()">
+                התקנה <i class="fas fa-download"></i>
+            </button>
+
+            <!-- iOS Instructions -->
+            <div id="ios-instructions" class="ios-instructions">
+                <div class="ios-step">
+                    <i class="fas fa-share-square ios-icon"></i>
+                    <span>1. לחצי על כפתור <b>השיתוף</b> למטה בדפדפן</span>
+                </div>
+                <div class="ios-step">
+                    <i class="fas fa-plus-square ios-icon"></i>
+                    <span>2. גללי ובחרי <b>"הוסף למסך הבית"</b></span>
+                </div>
+                <div class="ios-step">
+                    <span>3. לחצי על <b>"הוסף"</b> בפינה למעלה</span>
+                </div>
+            </div>
+
+            <div class="close-install" onclick="closeInstallOverlay()">אני רק רוצה להציץ...</div>
         </div>
     </div>
 
@@ -266,19 +297,71 @@
 
         let cart = [];
         let currentRating = 0;
+        let deferredPrompt; // For Android Install
 
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             renderTreatments();
             renderGallery();
             startSlider();
-            
-            // PWA Install Logic Simulation
-            if (!window.matchMedia('(display-mode: standalone)').matches && !localStorage.getItem('installDismissed')) {
-                // setTimeout(() => document.getElementById('install-prompt').style.display = 'flex', 3000);
+            checkInstallationStatus();
+        });
+
+        // --- INSTALLATION LOGIC (THE MAGIC) ---
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Show Android button if event captured
+            const overlay = document.getElementById('install-overlay');
+            const androidBtn = document.getElementById('android-install-btn');
+            if (overlay.style.display === 'flex') {
+                androidBtn.style.display = 'block';
             }
         });
 
+        function checkInstallationStatus() {
+            // If running in standalone (app mode), do nothing
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                return; 
+            }
+            
+            // If dismissed previously in this session, do nothing (optional)
+            if (sessionStorage.getItem('installDismissed')) return;
+
+            const overlay = document.getElementById('install-overlay');
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            
+            overlay.style.display = 'flex';
+
+            if (isIOS) {
+                document.getElementById('ios-instructions').style.display = 'block';
+            } else {
+                // For Android, we wait for the event, but show button anyway (fallback)
+                document.getElementById('android-install-btn').style.display = 'block';
+            }
+        }
+
+        function triggerAndroidInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        closeInstallOverlay();
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('לחצי על תפריט הדפדפן (3 נקודות) למעלה ובחרי "התקן אפליקציה"');
+            }
+        }
+
+        function closeInstallOverlay() {
+            document.getElementById('install-overlay').style.display = 'none';
+            sessionStorage.setItem('installDismissed', 'true');
+        }
+
+
+        // --- APP LOGIC ---
         function startSlider() {
             let slides = document.querySelectorAll('.carousel-slide');
             let i = 0;
@@ -289,9 +372,7 @@
             }, 3000);
         }
 
-        // --- RENDERING ---
         function renderTreatments() {
-            // FIX: מעבירים את ה-ID במקום את השם כדי למנוע בעיות עם גרשיים
             const html = treatments.map(t => `
                 <div class="treatment-card">
                     <div>
@@ -311,8 +392,6 @@
             ).join('');
         }
 
-        // --- BOOKING LOGIC ---
-        // FIX: הפונקציה מקבלת כעת ID
         function addToCart(id) {
             const item = treatments.find(t => t.id === id);
             if(item) {
@@ -348,8 +427,6 @@
             cart.forEach(i => msg += `- ${i.name}\n`);
             
             window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
-            
-            // הצגת כפתור הוספה ליומן
             document.getElementById('btn-add-calendar').style.display = 'flex';
         }
 
@@ -358,17 +435,12 @@
             if (!dateVal) return;
 
             const startDate = new Date(dateVal);
-            const endDate = new Date(startDate.getTime() + 60*60*1000); // הנחה של שעה טיפול
-            
-            // המרת תאריך לפורמט שגוגל אוהב (YYYYMMDDTHHMMSSZ)
+            const endDate = new Date(startDate.getTime() + 60*60*1000); 
             const formatGoogleDate = (date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");
-
             const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=טיפול אצל שירה קוסמטיקס&dates=${formatGoogleDate(startDate)}/${formatGoogleDate(endDate)}&details=טיפול מפנק אצל שירה!&location=ששת הימים 39א הוד השרון`;
-            
             window.open(url, '_blank');
         }
 
-        // --- RATING LOGIC ---
         function setRating(n) {
             currentRating = n;
             document.querySelectorAll('.star-rating i').forEach(star => {
@@ -386,14 +458,11 @@
                 alert('אנא דרגי ורשמי את שמך ⭐');
                 return;
             }
-            
             const stars = '⭐'.repeat(currentRating);
             let msg = `היי שירה! רציתי לפרגן לך ❤️\nדירוג: ${stars}\n\n"${text}"\n\nמאת: ${name}`;
-            
             window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // --- NAVIGATION ---
         function switchView(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById('view-' + viewName).classList.add('active');
@@ -403,11 +472,6 @@
         function highlightNav(elem) {
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             elem.classList.add('active');
-        }
-
-        function hideInstallPrompt() {
-            document.getElementById('install-prompt').style.display = 'none';
-            localStorage.setItem('installDismissed', 'true');
         }
     </script>
 </body>
