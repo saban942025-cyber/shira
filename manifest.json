@@ -3,7 +3,6 @@
   "short_name": "שירה",
   "description": "אפליקציה לקביעת תורים לטיפולי יופי ואסתטיקה בהוד השרון",
   "start_url": "./index.html",
-  "scope": "./",
   "display": "standalone",
   "background_color": "#fcfbf9",
   "theme_color": "#d4af37",
