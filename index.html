@@ -2,117 +2,251 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ניהול יומן - שירה קוסמטיקס</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- תיקון תגיות המטה לפי דרישת הדפדפן -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#d4af37">
+    <title>שירה קוסמטיקס</title>
+    
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        :root { --primary: #d4af37; --bg: #fcfbf9; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; }
-        h2 { color: var(--primary); margin: 10px 0; }
+        /* עיצוב יוקרתי */
+        :root { --primary: #d4af37; --bg-body: #fcfbf9; --text-main: #333; --radius: 16px; --shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding-bottom: 90px; }
+
+        header { padding: 15px; text-align: center; background: #fff; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; }
+        .app-logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 8px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); background: white; }
+        h1 { margin: 0; color: var(--primary); font-size: 1.4rem; font-weight: 700; }
+
+        .btn-main { background: var(--primary); color: white; padding: 14px; width: 100%; border: none; border-radius: 12px; font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); cursor: pointer; }
+        .btn-whatsapp { background: #25D366; }
+        .btn-calendar { background: #4285F4; margin-top: 10px; display: none; }
+
+        /* גלריה וסליידר */
+        .carousel-container { position: relative; width: 94%; height: 220px; margin: 15px auto; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+        .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s; background-size: cover; background-position: center; }
+        .carousel-slide.active { opacity: 1; }
+        .hero-overlay { position: absolute; bottom: 0; width: 100%; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); display: flex; justify-content: center; }
+        .hero-btn { background: var(--primary); color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
+
+        /* טיפולים */
+        .treatment-card { background: #fff; border-radius: var(--radius); padding: 15px; margin: 15px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; border-right: 3px solid var(--primary); }
+        .add-btn { background: #f7f7f7; width: 40px; height: 40px; border-radius: 50%; border: none; color: var(--primary); font-size: 1.4rem; font-weight: bold; }
+
+        /* יומן */
+        .calendar-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+        .time-slot { padding: 10px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 0.9rem; cursor: pointer; background: #fff; transition: 0.2s; }
+        .time-slot.selected { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4); }
         
-        .control-panel { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        label { display: block; margin-bottom: 10px; font-weight: bold; }
-        input[type="date"] { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; font-size: 1rem; }
+        /* סגנון לשעות תפוסות */
+        .time-slot.disabled { background: #f0f0f0; color: #ccc; cursor: not-allowed; text-decoration: line-through; pointer-events: none; border: 1px solid #eee; }
+        .time-slot.loading-slot { opacity: 0.5; }
+
+        /* ניווט */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0 15px; border-radius: 20px 20px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 200; }
+        .nav-item { text-align: center; color: #bbb; font-size: 0.7rem; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { display: block; font-size: 1.3rem; margin-bottom: 4px; }
+
+        .view { display: none; animation: fadeIn 0.3s; padding-bottom: 20px; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .slot { 
-            padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s;
-            background: #e8f5e9; /* ירוק - פנוי */
-        }
-        .slot.blocked {
-            background: #ffcdd2; /* אדום - חסום/תפוס */
-            color: #c62828;
-            border-color: #e57373;
-        }
-        .slot i { display: block; margin-bottom: 5px; font-size: 1.2rem; }
-        
-        .legend { display: flex; gap: 15px; margin-top: 20px; font-size: 0.9rem; justify-content: center; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; }
-        
-        .save-msg { text-align: center; color: green; margin-top: 10px; display: none; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <img src="https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png" alt="Logo">
-        <h2>ניהול יומן תורים</h2>
-        <p>לחצי על שעה כדי לחסום או לפתוח אותה</p>
+    <header>
+        <img src="https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png" alt="Logo" class="app-logo">
+        <h1>SHIRA COSMETICS</h1>
+        <div style="font-size: 0.8rem; color: #777;">ששת הימים 39א, הוד השרון</div>
+    </header>
+
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+        <div class="carousel-container">
+            <div class="carousel-slide active" style="background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg');"></div>
+            <div class="carousel-slide" style="background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.55 PM.jpeg');"></div>
+            <div class="hero-overlay"><a href="#" onclick="switchView('booking')" class="hero-btn">קבעי תור עכשיו</a></div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 0 15px;">
+            <div onclick="window.open('tel:+972538268067')" style="background:#fff; padding:15px; border-radius:12px; text-align:center; font-size:0.8rem; box-shadow:var(--shadow);"><i class="fas fa-phone" style="font-size:1.5rem; color:var(--primary);"></i><br>חיוג</div>
+            <div onclick="window.open('https://waze.com/ul?q=Shehet+HaYamim+39a+Hod+Hasharon')" style="background:#fff; padding:15px; border-radius:12px; text-align:center; font-size:0.8rem; box-shadow:var(--shadow);"><i class="fas fa-location-arrow" style="font-size:1.5rem; color:var(--primary);"></i><br>Waze</div>
+            <div onclick="window.open('https://wa.me/972538268067')" style="background:#fff; padding:15px; border-radius:12px; text-align:center; font-size:0.8rem; box-shadow:var(--shadow);"><i class="fab fa-whatsapp" style="font-size:1.5rem; color:var(--primary);"></i><br>הודעה</div>
+        </div>
+        <div style="padding: 20px 15px 10px; font-weight: bold; font-size: 1.2rem;">טיפולים פופולריים</div>
+        <div id="catalog-preview"></div>
     </div>
 
-    <div class="control-panel">
-        <label>בחרי תאריך לניהול:</label>
-        <input type="date" id="admin-date" onchange="loadDay()">
-
-        <div class="slots-grid" id="admin-slots">
-            <!-- Slots injected here -->
+    <!-- BOOKING -->
+    <div id="view-booking" class="view">
+        <div style="padding: 20px;">
+            <h2>הזמנת טיפול חדש</h2>
+            <div id="full-catalog"></div>
+            <div style="background: #fff; padding: 20px; border-radius: 15px; margin-top: 20px; box-shadow: var(--shadow);">
+                <h3>מתי נוח לך?</h3>
+                <div id="cart-display" style="color: #888; margin-bottom: 15px;">אנא בחרי טיפול למעלה</div>
+                <label>תאריך:</label>
+                <input type="date" id="booking-date" onchange="generateSlots()">
+                <label>שעות פנויות:</label>
+                <div id="slots-container" class="calendar-slots">טוען זמינות...</div>
+                <div style="margin-top:20px;">
+                    <label>שם מלא:</label>
+                    <input type="text" id="booking-name" placeholder="הקלידי את שמך">
+                </div>
+                <button class="btn-main btn-whatsapp" onclick="sendBooking()"><i class="fab fa-whatsapp"></i> שלחי לאישור בווצאף</button>
+                <button id="btn-add-calendar" class="btn-main btn-calendar" onclick="addToGoogleCalendar()"><i class="fas fa-calendar-plus"></i> שמרי ביומן שלך</button>
+            </div>
         </div>
-
-        <div class="legend">
-            <div><span class="dot" style="background:#e8f5e9; border:1px solid #ddd;"></span>פנוי ללקוחות</div>
-            <div><span class="dot" style="background:#ffcdd2;"></span>חסום/תפוס</div>
-        </div>
-        
-        <div id="save-msg" class="save-msg">השינויים נשמרו אוטומטית!</div>
     </div>
+
+    <!-- GALLERY -->
+    <div id="view-gallery" class="view">
+        <div style="padding: 20px;"><h2>תיק עבודות</h2></div>
+        <div id="gallery-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 15px;"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchView('home'); highlightNav(this)"><i class="fas fa-home"></i> <span>ראשי</span></div>
+        <div class="nav-item" onclick="switchView('booking'); highlightNav(this)"><i class="fas fa-calendar-check"></i> <span>תורים</span></div>
+        <div class="nav-item" onclick="switchView('gallery'); highlightNav(this)"><i class="fas fa-images"></i> <span>גלריה</span></div>
+    </nav>
 
     <script>
-        const HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
-        
-        // אתחול תאריך להיום
-        document.getElementById('admin-date').valueAsDate = new Date();
+        // *** הכתובת של הסקריפט שלך ***
+        const API_URL = "https://script.google.com/macros/s/AKfycbwbhq4WSCU6pZhRFLbOPxwF6v-c7aNpVMOv6NNKQD0JO2yoffp605zq5rzfKhaJUGbI/exec";
 
-        function loadDay() {
-            const date = document.getElementById('admin-date').value;
-            const container = document.getElementById('admin-slots');
+        const PHONE = "972538268067";
+        const treatments = [
+            { id: 1, name: "לק ג'ל", price: 140 },
+            { id: 2, name: "בניית ציפורניים", price: 300 },
+            { id: 3, name: "עיצוב גבות", price: 70 },
+            { id: 4, name: "מיקרובליידינג", price: 1100 },
+            { id: 5, name: "הרמת ריסים", price: 250 }
+        ];
+        const galleryImages = [
+            "pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg",
+            "pic/WhatsApp Image 2025-11-22 at 3.19.55 PM.jpeg",
+            "pic/WhatsApp Image 2025-11-22 at 3.19.54 PM.jpeg",
+            "pic/WhatsApp Image 2025-11-22 at 3.19.53 PM.jpeg"
+        ];
+        const HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+
+        let cart = [];
+        let selectedSlot = null;
+        let blockedData = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTreatments();
+            renderGallery();
+            startSlider();
+            document.getElementById('booking-date').valueAsDate = new Date();
+            fetchSlotsFromGoogle().then(() => generateSlots());
+        });
+
+        // שליפה מגוגל - פונקציית הלב הפועם!
+        async function fetchSlotsFromGoogle() {
+            try {
+                const res = await fetch(API_URL);
+                blockedData = await res.json();
+            } catch(e) {
+                console.error("Error fetching slots", e);
+                // במקרה של שגיאה, נציג הודעה
+                document.getElementById('slots-container').innerText = "שגיאה בטעינת יומן";
+            }
+        }
+
+        function generateSlots() {
+            const date = document.getElementById('booking-date').value;
+            const container = document.getElementById('slots-container');
             container.innerHTML = '';
 
-            // טעינת נתונים קיימים
-            const storedData = JSON.parse(localStorage.getItem('shira_schedule')) || {};
-            const dayData = storedData[date] || []; // מערך של שעות חסומות
+            const blockedHours = blockedData[date] || [];
 
             HOURS.forEach(time => {
                 const div = document.createElement('div');
-                const isBlocked = dayData.includes(time);
+                const isBlocked = blockedHours.includes(time);
                 
-                div.className = isBlocked ? 'slot blocked' : 'slot';
-                div.innerHTML = isBlocked ? `<i class="fas fa-lock"></i> ${time}` : `<i class="fas fa-check"></i> ${time}`;
+                div.className = isBlocked ? 'time-slot disabled' : 'time-slot';
+                div.innerText = time;
                 
-                div.onclick = () => toggleSlot(date, time);
+                if (isBlocked) {
+                    div.title = "תפוס";
+                } else {
+                    div.onclick = () => {
+                        document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+                        div.classList.add('selected');
+                        selectedSlot = time;
+                    };
+                }
                 container.appendChild(div);
             });
         }
 
-        function toggleSlot(date, time) {
-            const storedData = JSON.parse(localStorage.getItem('shira_schedule')) || {};
-            let dayData = storedData[date] || [];
-
-            if (dayData.includes(time)) {
-                // שחרור חסימה
-                dayData = dayData.filter(t => t !== time);
-            } else {
-                // הוספת חסימה
-                dayData.push(time);
-            }
-
-            storedData[date] = dayData;
-            localStorage.setItem('shira_schedule', JSON.stringify(storedData));
-            
-            // עדכון תצוגה והודעת שמירה
-            loadDay();
-            showSaveMsg();
+        // שאר הפונקציות
+        function renderTreatments() {
+            const html = treatments.map(t => `
+                <div class="treatment-card">
+                    <div><div style="font-weight:bold;">${t.name}</div><div style="color:var(--primary);">₪${t.price}</div></div>
+                    <button class="add-btn" onclick="addToCart(${t.id})">+</button>
+                </div>
+            `).join('');
+            document.getElementById('catalog-preview').innerHTML = html;
+            document.getElementById('full-catalog').innerHTML = html;
         }
-
-        function showSaveMsg() {
-            const msg = document.getElementById('save-msg');
-            msg.style.display = 'block';
-            setTimeout(() => msg.style.display = 'none', 2000);
+        function renderGallery() {
+            document.getElementById('gallery-grid').innerHTML = galleryImages.map(src => `<img src="${src}" style="width:100%; height:150px; object-fit:cover; border-radius:10px;">`).join('');
         }
-
-        // טעינה ראשונית
-        loadDay();
+        function startSlider() {
+            let slides = document.querySelectorAll('.carousel-slide');
+            let i = 0;
+            setInterval(() => { slides[i].classList.remove('active'); i = (i + 1) % slides.length; slides[i].classList.add('active'); }, 3000);
+        }
+        function addToCart(id) {
+            const item = treatments.find(t => t.id === id);
+            if(item) { cart.push(item); updateCartUI(); switchView('booking'); }
+        }
+        function updateCartUI() {
+            if(cart.length === 0) return;
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cart-display').innerHTML = `<b>נבחר:</b> ${cart.map(i => i.name).join(', ')}<br>סה"כ: ₪${total}`;
+        }
+        function sendBooking() {
+            const name = document.getElementById('booking-name').value;
+            const date = document.getElementById('booking-date').value;
+            if(!name || !date || cart.length === 0 || !selectedSlot) return alert('נא למלא את כל הפרטים');
+            const d = new Date(date);
+            const dateStr = d.toLocaleDateString('he-IL');
+            let msg = `היי שירה! כאן ${name}.\nאשמח לקבוע תור ל-${dateStr} ב-${selectedSlot}.\nטיפולים:\n`;
+            cart.forEach(i => msg += `- ${i.name}\n`);
+            window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+            document.getElementById('btn-add-calendar').style.display = 'flex';
+        }
+        function addToGoogleCalendar() {
+            const dateVal = document.getElementById('booking-date').value;
+            if (!dateVal || !selectedSlot) return;
+            const startDate = new Date(`${dateVal}T${selectedSlot}`);
+            const endDate = new Date(startDate.getTime() + 60*60*1000);
+            const formatGoogleDate = (date) => date.toISOString().replace(/-|:|\.\d\d\d/g, "");
+            const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=טיפול שירה קוסמטיקס&dates=${formatGoogleDate(startDate)}/${formatGoogleDate(endDate)}&details=טיפול מפנק!&location=הוד השרון`;
+            window.open(url, '_blank');
+        }
+        function switchView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + viewName).classList.add('active');
+            window.scrollTo(0,0);
+        }
+        function highlightNav(elem) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            elem.classList.add('active');
+        }
     </script>
 </body>
 </html>
