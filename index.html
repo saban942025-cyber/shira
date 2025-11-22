@@ -139,7 +139,6 @@
         const HOURS = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
         let cart = [], selectedSlot = null, blockedData = {}, pendingBookingMsg = "";
 
-        // נסה לטעון URL מ-localStorage של הדפדפן (אם עודכן ב-admin)
         const savedUrl = localStorage.getItem('shira_admin_url');
         if (savedUrl) API_URL = savedUrl;
 
@@ -158,7 +157,7 @@
                 document.getElementById('loading-msg').style.display = 'none';
             } catch(e) {
                 console.error("Error fetching slots", e);
-                document.getElementById('loading-msg').innerText = "טוען נתונים..."; // הודעה רכה יותר
+                document.getElementById('loading-msg').innerText = "טוען נתונים...";
             }
         }
 
@@ -220,8 +219,12 @@
             cart.forEach(i => msg += `- ${i.name}\n`);
             pendingBookingMsg = msg;
 
-            triggerBookingAlert(date, selectedSlot, name, phone);
+            // איסוף שמות הטיפולים למחרוזת
             const treatNames = cart.map(i => i.name).join(', ');
+            
+            // שליחה לשרת עם רשימת הטיפולים
+            triggerBookingAlert(date, selectedSlot, name, phone, treatNames);
+            
             saveToHistory(name, dateStr, selectedSlot, treatNames);
             document.getElementById('success-modal').style.display = 'flex';
         }
@@ -232,8 +235,16 @@
             document.getElementById('btn-add-calendar').style.display = 'flex';
         }
 
-        function triggerBookingAlert(date, time, name, phone) {
-            const payload = JSON.stringify({ date, time, name, phone, type: 'booking' });
+        function triggerBookingAlert(date, time, name, phone, treatment) {
+            const payload = JSON.stringify({ 
+                date: date, 
+                time: time, 
+                name: name, 
+                phone: phone, 
+                treatment: treatment, // שליחת הטיפולים
+                type: 'booking' 
+            });
+            
             fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: payload })
             .then(() => setTimeout(fetchSlotsFromGoogle, 1000));
         }
