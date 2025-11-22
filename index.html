@@ -46,17 +46,13 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
         .loading-text { text-align:center; color:#999; margin:10px 0; font-size:0.9rem; }
-
-        /* --- Modal Styles (New) --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; animation: fadeIn 0.3s; }
         .modal-content { background: white; width: 85%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; position: relative; }
         .modal-icon { font-size: 3rem; color: var(--primary); margin-bottom: 15px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .modal-title { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #333; }
         .modal-text { color: #666; margin-bottom: 25px; line-height: 1.5; }
         @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
-        
-        /* Section Spacing for Scroll */
-        .booking-step { margin-bottom: 30px; scroll-margin-top: 100px; /* Offset for sticky header */ }
+        .booking-step { margin-bottom: 30px; scroll-margin-top: 100px; }
     </style>
 </head>
 <body>
@@ -66,19 +62,12 @@
         <div style="font-size: 0.8rem; color: #777;">ששת הימים 39א, הוד השרון</div>
     </header>
 
-    <!-- Confirmation Modal -->
     <div id="success-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
             <div class="modal-title">איזה כיף!</div>
-            <div class="modal-text">
-                תודה שבחרת בשירה קוסמטיקס.<br>
-                שולחת את הפרטים לווצאף לאישור סופי.<br>
-                מחכה לראותך! ✨
-            </div>
-            <button class="btn-main btn-whatsapp" onclick="proceedToWhatsapp()">
-                <i class="fab fa-whatsapp"></i> עברי לווצאף
-            </button>
+            <div class="modal-text">תודה שבחרת בשירה קוסמטיקס.<br>שולחת את הפרטים לווצאף לאישור סופי.<br>מחכה לראותך! ✨</div>
+            <button class="btn-main btn-whatsapp" onclick="proceedToWhatsapp()"><i class="fab fa-whatsapp"></i> עברי לווצאף</button>
         </div>
     </div>
 
@@ -104,17 +93,12 @@
     <div id="view-booking" class="view">
         <div style="padding: 20px;">
             <h2>הזמנת טיפול חדש</h2>
-            
-            <!-- שלב 1: בחירת טיפול -->
             <div id="step-1-treatments" class="booking-step">
                 <div style="font-weight:bold; margin-bottom:10px; color:var(--primary);">1. בחרי את הפינוק שלך:</div>
                 <div id="full-catalog"></div>
             </div>
-
             <div style="background: #fff; padding: 20px; border-radius: 15px; margin-top: 20px; box-shadow: var(--shadow);">
                 <div id="cart-display" style="color: #888; margin-bottom: 15px; font-weight:bold;">הסל ריק כרגע</div>
-                
-                <!-- שלב 2: יומן -->
                 <div id="step-2-calendar" class="booking-step" style="opacity:0.5; pointer-events:none; transition:0.3s;">
                     <div style="font-weight:bold; margin-bottom:10px; color:var(--primary); margin-top:20px;">2. מתי נוח לך?</div>
                     <label>תאריך:</label>
@@ -123,20 +107,14 @@
                     <div id="slots-container" class="calendar-slots"></div>
                     <div id="loading-msg" class="loading-text" style="display:none;">בודק זמינות ביומן...</div>
                 </div>
-
-                <!-- שלב 3: פרטים ושליחה -->
                 <div id="step-3-details" class="booking-step" style="opacity:0.5; pointer-events:none; transition:0.3s;">
                     <div style="font-weight:bold; margin-bottom:10px; color:var(--primary); margin-top:20px;">3. פרטים לסיום:</div>
                     <label>שם מלא:</label>
                     <input type="text" id="booking-name" placeholder="הקלידי את שמך">
                     <label>מספר טלפון:</label>
                     <input type="tel" id="booking-phone" placeholder="050-0000000">
-                    
-                    <button class="btn-main btn-whatsapp" onclick="validateAndShowModal()" style="margin-top:20px;">
-                        <i class="fab fa-whatsapp"></i> סיימתי, קבעי לי תור!
-                    </button>
+                    <button class="btn-main btn-whatsapp" onclick="validateAndShowModal()" style="margin-top:20px;"><i class="fab fa-whatsapp"></i> סיימתי, קבעי לי תור!</button>
                 </div>
-
                 <button id="btn-add-calendar" class="btn-main btn-calendar" onclick="addToGoogleCalendar()"><i class="fas fa-calendar-plus"></i> שמרי ביומן שלך</button>
             </div>
         </div>
@@ -154,33 +132,19 @@
     </nav>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbwbhq4WSCU6pZhRFLbOPxwF6v-c7aNpVMOv6NNKQD0JO2yoffp605zq5rzfKhaJUGbI/exec";
+        let API_URL = "https://script.google.com/macros/s/AKfycbwbhq4WSCU6pZhRFLbOPxwF6v-c7aNpVMOv6NNKQD0JO2yoffp605zq5rzfKhaJUGbI/exec";
         const PHONE = "972538268067";
-        const treatments = [
-            { id: 1, name: "לק ג'ל", price: 140 },
-            { id: 2, name: "בניית ציפורניים", price: 300 },
-            { id: 3, name: "עיצוב גבות", price: 70 },
-            { id: 4, name: "מיקרובליידינג", price: 1100 },
-            { id: 5, name: "הרמת ריסים", price: 250 }
-        ];
-        const galleryImages = [
-            "pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg",
-            "pic/WhatsApp Image 2025-11-22 at 3.19.55 PM.jpeg",
-            "pic/WhatsApp Image 2025-11-22 at 3.19.54 PM.jpeg",
-            "pic/WhatsApp Image 2025-11-22 at 3.19.53 PM.jpeg"
-        ];
-        const HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+        const treatments = [{id:1,name:"לק ג'ל",price:140},{id:2,name:"בניית ציפורניים",price:300},{id:3,name:"עיצוב גבות",price:70},{id:4,name:"מיקרובליידינג",price:1100},{id:5,name:"הרמת ריסים",price:250}];
+        const galleryImages = ["pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg","pic/WhatsApp Image 2025-11-22 at 3.19.55 PM.jpeg","pic/WhatsApp Image 2025-11-22 at 3.19.54 PM.jpeg","pic/WhatsApp Image 2025-11-22 at 3.19.53 PM.jpeg"];
+        const HOURS = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+        let cart = [], selectedSlot = null, blockedData = {}, pendingBookingMsg = "";
 
-        let cart = [];
-        let selectedSlot = null;
-        let blockedData = {};
-        let pendingBookingMsg = ""; // To store message for whatsapp
+        // נסה לטעון URL מ-localStorage של הדפדפן (אם עודכן ב-admin)
+        const savedUrl = localStorage.getItem('shira_admin_url');
+        if (savedUrl) API_URL = savedUrl;
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderTreatments();
-            renderGallery();
-            startSlider();
-            loadHistory();
+            renderTreatments(); renderGallery(); startSlider(); loadHistory();
             document.getElementById('booking-date').valueAsDate = new Date();
             fetchSlotsFromGoogle().then(() => generateSlots());
         });
@@ -189,11 +153,12 @@
             document.getElementById('loading-msg').style.display = 'block';
             try {
                 const res = await fetch(API_URL);
+                if(!res.ok) throw new Error(res.status);
                 blockedData = await res.json();
                 document.getElementById('loading-msg').style.display = 'none';
             } catch(e) {
                 console.error("Error fetching slots", e);
-                document.getElementById('loading-msg').innerText = "שגיאה בטעינת יומן, נסה לרענן";
+                document.getElementById('loading-msg').innerText = "טוען נתונים..."; // הודעה רכה יותר
             }
         }
 
@@ -202,24 +167,19 @@
             const container = document.getElementById('slots-container');
             container.innerHTML = '';
             const blockedHours = blockedData[date] || [];
-
             HOURS.forEach(time => {
                 const div = document.createElement('div');
                 const isBlocked = blockedHours.includes(time);
                 div.className = isBlocked ? 'time-slot disabled' : 'time-slot';
                 div.innerText = time;
-                if (isBlocked) {
-                    div.title = "תפוס";
-                } else {
+                if (isBlocked) div.title = "תפוס";
+                else {
                     div.onclick = () => {
                         document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
                         div.classList.add('selected');
                         selectedSlot = time;
-                        
-                        // SCROLL LOGIC: Scroll to Details
                         const step3 = document.getElementById('step-3-details');
-                        step3.style.opacity = "1";
-                        step3.style.pointerEvents = "auto";
+                        step3.style.opacity = "1"; step3.style.pointerEvents = "auto";
                         step3.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     };
                 }
@@ -228,32 +188,17 @@
         }
 
         function renderTreatments() {
-            const html = treatments.map(t => `
-                <div class="treatment-card">
-                    <div><div style="font-weight:bold;">${t.name}</div><div style="color:var(--primary);">₪${t.price}</div></div>
-                    <button class="add-btn" onclick="addToCart(${t.id})">+</button>
-                </div>
-            `).join('');
-            document.getElementById('catalog-preview').innerHTML = html;
-            document.getElementById('full-catalog').innerHTML = html;
+            document.getElementById('full-catalog').innerHTML = treatments.map(t => `<div class="treatment-card"><div><div style="font-weight:bold;">${t.name}</div><div style="color:var(--primary);">₪${t.price}</div></div><button class="add-btn" onclick="addToCart(${t.id})">+</button></div>`).join('');
+            document.getElementById('catalog-preview').innerHTML = treatments.slice(0,2).map(t => `<div class="treatment-card"><div><div style="font-weight:bold;">${t.name}</div><div style="color:var(--primary);">₪${t.price}</div></div><button class="add-btn" onclick="addToCart(${t.id})">+</button></div>`).join('');
         }
 
         function addToCart(id) {
             const item = treatments.find(t => t.id === id);
             if(item) { 
-                cart.push(item); 
-                updateCartUI(); 
-                switchView('booking');
-                
-                // SCROLL LOGIC: Unlock Calendar and Scroll
+                cart.push(item); updateCartUI(); switchView('booking');
                 const step2 = document.getElementById('step-2-calendar');
-                step2.style.opacity = "1";
-                step2.style.pointerEvents = "auto";
-                
-                // Small delay to ensure view switch is done
-                setTimeout(() => {
-                    step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
+                step2.style.opacity = "1"; step2.style.pointerEvents = "auto";
+                setTimeout(() => step2.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             }
         }
 
@@ -263,33 +208,21 @@
             document.getElementById('cart-display').innerHTML = `<b>נבחר:</b> ${cart.map(i => i.name).join(', ')}<br>סה"כ: ₪${total}`;
         }
 
-        // --- New Validation & Celebration Logic ---
         function validateAndShowModal() {
             const name = document.getElementById('booking-name').value;
             const phone = document.getElementById('booking-phone').value;
             const date = document.getElementById('booking-date').value;
+            if(!name || !phone || !date || cart.length === 0 || !selectedSlot) return alert('אנא השלימי את כל השלבים: טיפול, תאריך, שעה ופרטים אישיים ❤️');
             
-            if(!name || !phone || !date || cart.length === 0 || !selectedSlot) {
-                return alert('אנא השלימי את כל השלבים: טיפול, תאריך, שעה ופרטים אישיים ❤️');
-            }
-
-            // Prepare everything but don't send yet
             const d = new Date(date);
             const dateStr = d.toLocaleDateString('he-IL');
-            
-            // Save msg globally to use after modal
             let msg = `היי שירה! כאן ${name} (${phone}).\nאשמח לקבוע תור ל-${dateStr} בשעה ${selectedSlot}.\nטיפולים:\n`;
             cart.forEach(i => msg += `- ${i.name}\n`);
             pendingBookingMsg = msg;
 
-            // Trigger server update immediately (optimistic)
             triggerBookingAlert(date, selectedSlot, name, phone);
-            
-            // Save history
             const treatNames = cart.map(i => i.name).join(', ');
             saveToHistory(name, dateStr, selectedSlot, treatNames);
-
-            // Show Celebration Modal
             document.getElementById('success-modal').style.display = 'flex';
         }
 
@@ -297,7 +230,6 @@
             window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(pendingBookingMsg)}`, '_blank');
             document.getElementById('success-modal').style.display = 'none';
             document.getElementById('btn-add-calendar').style.display = 'flex';
-            // Reset for next time? Optional.
         }
 
         function triggerBookingAlert(date, time, name, phone) {
@@ -306,7 +238,6 @@
             .then(() => setTimeout(fetchSlotsFromGoogle, 1000));
         }
 
-        // --- Standard Helpers ---
         function renderGallery() { document.getElementById('gallery-grid').innerHTML = galleryImages.map(src => `<img src="${src}" style="width:100%; height:150px; object-fit:cover; border-radius:10px;">`).join(''); }
         function startSlider() { let slides = document.querySelectorAll('.carousel-slide'); let i = 0; setInterval(() => { slides[i].classList.remove('active'); i = (i + 1) % slides.length; slides[i].classList.add('active'); }, 3000); }
         function loadHistory() {
