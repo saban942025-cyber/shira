@@ -19,19 +19,18 @@
         .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .slot { 
             padding: 15px; border: 1px solid #ddd; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s;
-            background: #e8f5e9; /* ירוק - פנוי */
+            background: #fff; position: relative;
         }
         .slot.blocked {
-            background: #ffcdd2; /* אדום - חסום/תפוס */
+            background: #ffcdd2; /* אדום - חסום */
             color: #c62828;
             border-color: #e57373;
         }
+        .slot.loading { opacity: 0.5; pointer-events: none; }
         .slot i { display: block; margin-bottom: 5px; font-size: 1.2rem; }
         
         .legend { display: flex; gap: 15px; margin-top: 20px; font-size: 0.9rem; justify-content: center; }
         .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 5px; }
-        
-        .save-msg { text-align: center; color: green; margin-top: 10px; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -39,80 +38,90 @@
     <div class="header">
         <img src="https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png" alt="Logo">
         <h2>ניהול יומן תורים</h2>
-        <p>לחצי על שעה כדי לחסום או לפתוח אותה</p>
     </div>
 
     <div class="control-panel">
         <label>בחרי תאריך לניהול:</label>
-        <input type="date" id="admin-date" onchange="loadDay()">
+        <input type="date" id="admin-date" onchange="fetchSlots()">
 
-        <div class="slots-grid" id="admin-slots">
-            <!-- Slots injected here -->
-        </div>
+        <div id="status-text" style="text-align:center; margin-bottom:10px; color:#777;">טוען נתונים...</div>
+
+        <div class="slots-grid" id="admin-slots"></div>
 
         <div class="legend">
-            <div><span class="dot" style="background:#e8f5e9; border:1px solid #ddd;"></span>פנוי ללקוחות</div>
-            <div><span class="dot" style="background:#ffcdd2;"></span>חסום/תפוס</div>
+            <div><span class="dot" style="background:#fff; border:1px solid #ddd;"></span>פנוי</div>
+            <div><span class="dot" style="background:#ffcdd2;"></span>חסום</div>
         </div>
-        
-        <div id="save-msg" class="save-msg">השינויים נשמרו אוטומטית!</div>
     </div>
 
     <script>
-        const HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
-        
-        // אתחול תאריך להיום
-        document.getElementById('admin-date').valueAsDate = new Date();
+        // *** הכתובת של הסקריפט מוטמעת בפנים ***
+        const API_URL = "https://script.google.com/macros/s/AKfycbwbhq4WSCU6pZhRFLbOPxwF6v-c7aNpVMOv6NNKQD0JO2yoffp605zq5rzfKhaJUGbI/exec";
 
-        function loadDay() {
+        const HOURS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'];
+        let blockedData = {}; 
+
+        document.getElementById('admin-date').valueAsDate = new Date();
+        
+        // טעינה ראשונית
+        fetchSlots();
+
+        // 1. שליפת נתונים מהגליון
+        function fetchSlots() {
+            document.getElementById('status-text').innerText = 'מתחבר ליומן...';
+            
+            fetch(API_URL)
+            .then(res => res.json())
+            .then(data => {
+                blockedData = data;
+                document.getElementById('status-text').innerText = '';
+                renderSlots();
+            })
+            .catch(err => {
+                document.getElementById('status-text').innerText = 'שגיאה בחיבור';
+                console.error(err);
+            });
+        }
+
+        // 2. הצגת השעות
+        function renderSlots() {
             const date = document.getElementById('admin-date').value;
             const container = document.getElementById('admin-slots');
             container.innerHTML = '';
 
-            // טעינת נתונים קיימים
-            const storedData = JSON.parse(localStorage.getItem('shira_schedule')) || {};
-            const dayData = storedData[date] || []; // מערך של שעות חסומות
+            const dayBlocked = blockedData[date] || [];
 
             HOURS.forEach(time => {
                 const div = document.createElement('div');
-                const isBlocked = dayData.includes(time);
+                const isBlocked = dayBlocked.includes(time);
                 
                 div.className = isBlocked ? 'slot blocked' : 'slot';
                 div.innerHTML = isBlocked ? `<i class="fas fa-lock"></i> ${time}` : `<i class="fas fa-check"></i> ${time}`;
+                div.id = `slot-${time}`; // לזיהוי בעת טעינה
                 
                 div.onclick = () => toggleSlot(date, time);
                 container.appendChild(div);
             });
         }
 
+        // 3. עדכון חסימה בגליון
         function toggleSlot(date, time) {
-            const storedData = JSON.parse(localStorage.getItem('shira_schedule')) || {};
-            let dayData = storedData[date] || [];
+            const el = document.getElementById(`slot-${time}`);
+            el.classList.add('loading'); // סימון טעינה
+            el.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${time}`;
 
-            if (dayData.includes(time)) {
-                // שחרור חסימה
-                dayData = dayData.filter(t => t !== time);
-            } else {
-                // הוספת חסימה
-                dayData.push(time);
-            }
-
-            storedData[date] = dayData;
-            localStorage.setItem('shira_schedule', JSON.stringify(storedData));
-            
-            // עדכון תצוגה והודעת שמירה
-            loadDay();
-            showSaveMsg();
+            // שליחה לשרת
+            fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors', // חשוב עבור Apps Script
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: date, time: time })
+            }).then(() => {
+                // מכיוון שאין תגובה אמיתית ב-no-cors, נרענן את כל הנתונים
+                // או שנעדכן את הממשק אופטימית
+                setTimeout(() => fetchSlots(), 1000); 
+            }).catch(err => alert('שגיאה בשמירה'));
         }
-
-        function showSaveMsg() {
-            const msg = document.getElementById('save-msg');
-            msg.style.display = 'block';
-            setTimeout(() => msg.style.display = 'none', 2000);
-        }
-
-        // טעינה ראשונית
-        loadDay();
     </script>
 </body>
 </html>
