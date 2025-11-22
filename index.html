@@ -3,88 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#d4af37">
     <title>שירה קוסמטיקס</title>
-    
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         /* עיצוב יוקרתי */
         :root { --primary: #d4af37; --bg-body: #fcfbf9; --text-main: #333; --radius: 16px; --shadow: 0 4px 20px rgba(0,0,0,0.05); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding-bottom: 90px; }
-
         header { padding: 15px; text-align: center; background: #fff; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; }
         .app-logo { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 8px; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3); background: white; }
         h1 { margin: 0; color: var(--primary); font-size: 1.4rem; font-weight: 700; }
-
         .btn-main { background: var(--primary); color: white; padding: 14px; width: 100%; border: none; border-radius: 12px; font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); cursor: pointer; }
         .btn-whatsapp { background: #25D366; }
         .btn-calendar { background: #4285F4; margin-top: 10px; display: none; }
-
-        /* גלריה וסליידר */
         .carousel-container { position: relative; width: 94%; height: 220px; margin: 15px auto; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
         .carousel-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s; background-size: cover; background-position: center; }
         .carousel-slide.active { opacity: 1; }
         .hero-overlay { position: absolute; bottom: 0; width: 100%; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); display: flex; justify-content: center; }
         .hero-btn { background: var(--primary); color: white; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-size: 0.9rem; font-weight: bold; }
-
-        /* טיפולים */
         .treatment-card { background: #fff; border-radius: var(--radius); padding: 15px; margin: 15px; box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; border-right: 3px solid var(--primary); }
         .add-btn { background: #f7f7f7; width: 40px; height: 40px; border-radius: 50%; border: none; color: var(--primary); font-size: 1.4rem; font-weight: bold; }
-
-        /* יומן */
         .calendar-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
         .time-slot { padding: 10px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 0.9rem; cursor: pointer; background: #fff; transition: 0.2s; }
         .time-slot.selected { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); box-shadow: 0 2px 8px rgba(212, 175, 55, 0.4); }
         .time-slot.disabled { background: #f0f0f0; color: #ccc; cursor: not-allowed; text-decoration: line-through; pointer-events: none; border: 1px solid #eee; }
-        
-        /* היסטוריית תורים */
         .history-card { background: #fff; border-radius: var(--radius); padding: 15px; margin: 15px; border-right: 4px solid #4285F4; box-shadow: var(--shadow); }
         .history-date { font-weight: bold; font-size: 1.1rem; color: #333; }
         .history-time { color: #666; font-size: 0.9rem; margin-bottom: 5px; }
         .history-items { font-size: 0.9rem; color: var(--primary); }
-
-        /* ניווט */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0 15px; border-radius: 20px 20px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 200; }
         .nav-item { text-align: center; color: #bbb; font-size: 0.7rem; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { display: block; font-size: 1.3rem; margin-bottom: 4px; }
-
         .view { display: none; animation: fadeIn 0.3s; padding-bottom: 20px; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .loading-text { text-align:center; color:#999; margin:10px 0; font-size:0.9rem; }
     </style>
 </head>
 <body>
-
     <header>
         <img src="https://raw.githubusercontent.com/saban942025-cyber/shira/refs/heads/main/pic/shira%20logo.png" alt="Logo" class="app-logo">
         <h1>SHIRA COSMETICS</h1>
         <div style="font-size: 0.8rem; color: #777;">ששת הימים 39א, הוד השרון</div>
     </header>
 
-    <!-- HOME -->
     <div id="view-home" class="view active">
         <div class="carousel-container">
             <div class="carousel-slide active" style="background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.56 PM.jpeg');"></div>
             <div class="carousel-slide" style="background-image: url('pic/WhatsApp Image 2025-11-22 at 3.19.55 PM.jpeg');"></div>
             <div class="hero-overlay"><a href="#" onclick="switchView('booking')" class="hero-btn">קבעי תור עכשיו</a></div>
         </div>
-        
-        <!-- אזור היסטוריה (יופיע רק אם יש תורים) -->
         <div id="history-section" style="display:none;">
             <div style="padding: 0 15px; margin-top: 20px; font-weight: bold; color: #4285F4;">התורים הקרובים שלי 📅</div>
             <div id="history-container"></div>
         </div>
-
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px 15px 0;">
             <div onclick="window.open('tel:+972538268067')" style="background:#fff; padding:15px; border-radius:12px; text-align:center; font-size:0.8rem; box-shadow:var(--shadow);"><i class="fas fa-phone" style="font-size:1.5rem; color:var(--primary);"></i><br>חיוג</div>
             <div onclick="window.open('https://waze.com/ul?q=Shehet+HaYamim+39a+Hod+Hasharon')" style="background:#fff; padding:15px; border-radius:12px; text-align:center; font-size:0.8rem; box-shadow:var(--shadow);"><i class="fas fa-location-arrow" style="font-size:1.5rem; color:var(--primary);"></i><br>Waze</div>
@@ -94,7 +73,6 @@
         <div id="catalog-preview"></div>
     </div>
 
-    <!-- BOOKING -->
     <div id="view-booking" class="view">
         <div style="padding: 20px;">
             <h2>הזמנת טיפול חדש</h2>
@@ -102,28 +80,23 @@
             <div style="background: #fff; padding: 20px; border-radius: 15px; margin-top: 20px; box-shadow: var(--shadow);">
                 <h3>מתי נוח לך?</h3>
                 <div id="cart-display" style="color: #888; margin-bottom: 15px;">אנא בחרי טיפול למעלה</div>
-                
                 <label>תאריך:</label>
                 <input type="date" id="booking-date" onchange="generateSlots()">
-                
                 <label>שעות פנויות:</label>
-                <div id="slots-container" class="calendar-slots">טוען זמינות...</div>
-                
+                <div id="slots-container" class="calendar-slots"></div>
+                <div id="loading-msg" class="loading-text" style="display:none;">בודק זמינות ביומן...</div>
                 <div style="margin-top:20px;">
                     <label>שם מלא:</label>
                     <input type="text" id="booking-name" placeholder="הקלידי את שמך">
-                    
                     <label>מספר טלפון:</label>
                     <input type="tel" id="booking-phone" placeholder="050-0000000">
                 </div>
-                
                 <button class="btn-main btn-whatsapp" onclick="sendBooking()"><i class="fab fa-whatsapp"></i> שלחי לאישור בווצאף</button>
                 <button id="btn-add-calendar" class="btn-main btn-calendar" onclick="addToGoogleCalendar()"><i class="fas fa-calendar-plus"></i> שמרי ביומן שלך</button>
             </div>
         </div>
     </div>
 
-    <!-- GALLERY -->
     <div id="view-gallery" class="view">
         <div style="padding: 20px;"><h2>תיק עבודות</h2></div>
         <div id="gallery-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 15px;"></div>
@@ -136,7 +109,7 @@
     </nav>
 
     <script>
-        // כתובת הסקריפט שלך לניהול היומן
+        // כתובת הסקריפט (עדכן אם השתנה לאחר הפריסה החדשה)
         const API_URL = "https://script.google.com/macros/s/AKfycbwbhq4WSCU6pZhRFLbOPxwF6v-c7aNpVMOv6NNKQD0JO2yoffp605zq5rzfKhaJUGbI/exec";
 
         const PHONE = "972538268067";
@@ -163,57 +136,43 @@
             renderTreatments();
             renderGallery();
             startSlider();
-            loadHistory(); // טעינת היסטוריית תורים
+            loadHistory();
             document.getElementById('booking-date').valueAsDate = new Date();
+            
+            // נסה לטעון נתונים מיד
             fetchSlotsFromGoogle().then(() => generateSlots());
         });
 
-        // --- History Logic ---
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('shira_app_history')) || [];
-            const container = document.getElementById('history-container');
-            const section = document.getElementById('history-section');
-            
-            if (history.length > 0) {
-                section.style.display = 'block';
-                container.innerHTML = history.map(item => `
-                    <div class="history-card">
-                        <div class="history-date">${item.date} | ${item.time}</div>
-                        <div class="history-time">נקבע עבור: ${item.name}</div>
-                        <div class="history-items">${item.treatments}</div>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function saveToHistory(name, date, time, treatmentsStr) {
-            const history = JSON.parse(localStorage.getItem('shira_app_history')) || [];
-            history.unshift({ name, date, time, treatments: treatmentsStr }); // הוספה להתחלה
-            localStorage.setItem('shira_app_history', JSON.stringify(history));
-            loadHistory(); // רענון תצוגה
-        }
-
-        // --- Google Sync Logic ---
         async function fetchSlotsFromGoogle() {
+            document.getElementById('loading-msg').style.display = 'block';
             try {
                 const res = await fetch(API_URL);
                 blockedData = await res.json();
+                document.getElementById('loading-msg').style.display = 'none';
             } catch(e) {
                 console.error("Error fetching slots", e);
-                document.getElementById('slots-container').innerText = "טוען...";
+                document.getElementById('loading-msg').innerText = "שגיאה בטעינת יומן, נסה לרענן";
             }
         }
 
-        function triggerBookingAlert(date, time, name) {
-            // שליחת בקשה לסקריפט כדי לחסום את התור (טריגר לטיפול חדש)
+        function triggerBookingAlert(date, time, name, phone) {
+            const payload = JSON.stringify({ 
+                date: date, 
+                time: time, 
+                name: name, 
+                phone: phone, 
+                type: 'booking' 
+            });
+
             fetch(API_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date: date, time: time, name: name, type: 'booking' })
+                headers: { 'Content-Type': 'text/plain' },
+                body: payload
             }).then(() => {
-                console.log("Booking trigger sent to script");
-                fetchSlotsFromGoogle(); // רענון הנתונים לאחר השמירה
+                console.log("Booking trigger sent");
+                // רענון הנתונים כדי להראות שהתור נתפס
+                setTimeout(fetchSlotsFromGoogle, 1000);
             }).catch(err => console.error("Booking trigger failed", err));
         }
 
@@ -244,7 +203,7 @@
             });
         }
 
-        // --- Main Logic ---
+        // --- פונקציות תצוגה ולוגיקה בסיסית ---
         function renderTreatments() {
             const html = treatments.map(t => `
                 <div class="treatment-card">
@@ -263,6 +222,26 @@
             let i = 0;
             setInterval(() => { slides[i].classList.remove('active'); i = (i + 1) % slides.length; slides[i].classList.add('active'); }, 3000);
         }
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('shira_app_history')) || [];
+            const container = document.getElementById('history-container');
+            if (history.length > 0) {
+                document.getElementById('history-section').style.display = 'block';
+                container.innerHTML = history.map(item => `
+                    <div class="history-card">
+                        <div class="history-date">${item.date} | ${item.time}</div>
+                        <div class="history-time">עבור: ${item.name}</div>
+                        <div class="history-items">${item.treatments}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        function saveToHistory(name, date, time, treatmentsStr) {
+            const history = JSON.parse(localStorage.getItem('shira_app_history')) || [];
+            history.unshift({ name, date, time, treatments: treatmentsStr });
+            localStorage.setItem('shira_app_history', JSON.stringify(history));
+            loadHistory();
+        }
         function addToCart(id) {
             const item = treatments.find(t => t.id === id);
             if(item) { cart.push(item); updateCartUI(); switchView('booking'); }
@@ -272,7 +251,6 @@
             const total = cart.reduce((sum, item) => sum + item.price, 0);
             document.getElementById('cart-display').innerHTML = `<b>נבחר:</b> ${cart.map(i => i.name).join(', ')}<br>סה"כ: ₪${total}`;
         }
-        
         function sendBooking() {
             const name = document.getElementById('booking-name').value;
             const phone = document.getElementById('booking-phone').value;
@@ -282,23 +260,19 @@
                 return alert('נא למלא את כל הפרטים: שם, טלפון, טיפול ושעה ❤️');
             }
             
-            // 1. שליחת טריגר לסקריפט (חסימת התור בשרת)
-            triggerBookingAlert(date, selectedSlot, name);
+            triggerBookingAlert(date, selectedSlot, name, phone);
 
-            // 2. שמירה בהיסטוריה המקומית
             const d = new Date(date);
             const dateStr = d.toLocaleDateString('he-IL');
             const treatNames = cart.map(i => i.name).join(', ');
             saveToHistory(name, dateStr, selectedSlot, treatNames);
 
-            // 3. הכנת הודעת ווצאף
             let msg = `היי שירה! כאן ${name} (${phone}).\nאשמח לקבוע תור ל-${dateStr} בשעה ${selectedSlot}.\nטיפולים:\n`;
             cart.forEach(i => msg += `- ${i.name}\n`);
             
             window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
             document.getElementById('btn-add-calendar').style.display = 'flex';
         }
-
         function addToGoogleCalendar() {
             const dateVal = document.getElementById('booking-date').value;
             if (!dateVal || !selectedSlot) return;
