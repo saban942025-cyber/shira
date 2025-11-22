@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <!-- תיקון תגיות המטה לפי דרישת הדפדפן -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -120,7 +119,7 @@
     </nav>
 
     <script>
-        // *** הכתובת של הסקריפט שלך ***
+        // *** הכתובת שלך מוטמעת כאן ***
         const API_URL = "https://script.google.com/macros/s/AKfycbwbhq4WSCU6pZhRFLbOPxwF6v-c7aNpVMOv6NNKQD0JO2yoffp605zq5rzfKhaJUGbI/exec";
 
         const PHONE = "972538268067";
@@ -158,7 +157,6 @@
                 blockedData = await res.json();
             } catch(e) {
                 console.error("Error fetching slots", e);
-                // במקרה של שגיאה, נציג הודעה
                 document.getElementById('slots-container').innerText = "שגיאה בטעינת יומן";
             }
         }
